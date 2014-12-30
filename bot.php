@@ -61,12 +61,8 @@ class MyBot
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^-uirl', $this, 'dp_update_irl'),
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '.*?', $this, 'channel_test'),
         );
-        
-        $hostDB 	= $dbconfig['host'];
-		$user 		= $dbconfig['user'];
-		$password 	= $dbconfig['password'];
-		
-	    $this->dbh = new PDO($hostDB, $user, $password);
+		global $config;
+	    $this->dbh = new PDO($config['db']['host'], $config['db']['user'], $config['db']['password']);
     }
     
     public function dp_forum($irc, $data)
@@ -247,7 +243,7 @@ $irc = new Net_SmartIRC(array(
 ));
 $bot = new MyBot($irc);
 $irc->connect($ircconfig['host'], $ircconfig['port']);
-$irc->login($ircconfig['nick'], $ircconfig['ident'], $ircconfig['usermode'], $ircconfig['alternative']);
+$irc->login($ircconfig['nick'], $ircconfig['realname'], $ircconfig['usermode'], $ircconfig['ident']);
 $irc->message(SMARTIRC_TYPE_QUERY, "NickServ", "identify {$ircconfig['nickserv']}"); 
 $irc->join($ircconfig['channels']);
 $irc->listen();
