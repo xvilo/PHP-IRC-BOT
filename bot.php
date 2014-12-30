@@ -26,6 +26,7 @@
 // ---EXAMPLE OF HOW TO USE Net_SmartIRC---
 // this code shows how a mini php bot which could be written
 include_once('Net/SmartIRC.php');
+include_once('../config.php');
 
 class MyBot
 {
@@ -61,9 +62,9 @@ class MyBot
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '.*?', $this, 'channel_test'),
         );
         
-        $hostDB 	= 'mysql:host=.com;dbname=phpircbot';
-		$user 		= '';
-		$password 	= '';
+        $hostDB 	= $dbconfig['host'];
+		$user 		= $dbconfig['user'];
+		$password 	= $dbconfig['password'];
 		
 	    $this->dbh = new PDO($hostDB, $user, $password);
     }
@@ -245,9 +246,9 @@ $irc = new Net_SmartIRC(array(
     //'DebugLevel' => SMARTIRC_DEBUG_ALL,
 ));
 $bot = new MyBot($irc);
-$irc->connect('irc.digitalplace.nl', 6667);
-$irc->login('Anna', 'Tangramm', 0, 'Tangramm');
-$irc->message(SMARTIRC_TYPE_QUERY, "NickServ", "identify "); 
-$irc->join(array('#dpb','#xvilo', '#dpf', '#spotify'));
+$irc->connect($ircconfig['host'], $ircconfig['port']);
+$irc->login($ircconfig['nick'], $ircconfig['ident'], $ircconfig['usermode'], $ircconfig['alternative']);
+$irc->message(SMARTIRC_TYPE_QUERY, "NickServ", "identify {$ircconfig['nickserv']}"); 
+$irc->join($ircconfig['channels']);
 $irc->listen();
 $irc->disconnect();

@@ -1,32 +1,33 @@
 <?php
-	$hostDB 	= 'mysql:host=;dbname=phpircbot';
-	$user 		= '';
-	$password 	= '';
-		
-	$dbh = new PDO($hostDB, $user, $password);
-	//$push = file_get_contents('http://thisisd3.com/push/push.php?title=DP+IRC+Bot&message=DP+irc+bot+started+updating');
-	//echo $push;
-	
-# DigitalPlace API #
+	# DigitalPlace API #
 include_once ('dp.class.php');
-include_once ('config.php');
+include_once ('../config.php');
+
+$hostDB 	= $dbconfig['host'];
+$user 		= $dbconfig['user'];
+$password 	= $dbconfig['password'];
+		
+$dbh = new PDO($hostDB, $user, $password);
+//$push = file_get_contents('http://thisisd3.com/push/push.php?title=DP+IRC+Bot&message=DP+irc+bot+started+updating');
+//echo $push;
+
 $dp = new DigitalPlace ($user, $pass);
 
 # Forum #
 $forum = $dp->getForumItems (25);
-file_put_contents ('stuff/forum', serialize ($forum));
+//file_put_contents ('stuff/forum', serialize ($forum));
 addToDB(serialize ($forum), 'forum');
 
 # PMs #
 $pms = $dp->getPmList ();
-file_put_contents ('stuff/pms', serialize ($pms));
+//file_put_contents ('stuff/pms', serialize ($pms));
 addToDB(serialize ($pms), 'pms');
 
 # Karma #
 $source = $dp->getPage ('forum/');
 preg_match ('/\<p\ class\=\"mobiel\"\>Gebruikers\ met\ de\ hoogste\ karma(.+)\<\/p\>/', $source, $match);
 $karma = substr (strip_tags ($match[0]), 33);
-file_put_contents ('stuff/karma', serialize ($karma));
+//file_put_contents ('stuff/karma', serialize ($karma));
 addToDB(serialize ($karma), 'karma');
 
 # Stats #
@@ -46,24 +47,24 @@ $stats = array
 	'nieuwsteLid' => lastWord ($temp[3]),
 	'string' => 'Berichten: ' . $aantalBerichten . ' :: Topics: ' . $aantalTopics . ' :: Leden: ' . $aantalLeden . ' (nieuwste: ' . $nieuwsteLid . ')'
 );
-file_put_contents ('stuff/stats', serialize ($stats));
+//file_put_contents ('stuff/stats', serialize ($stats));
 addToDB(serialize ($stats), 'stats');
 
 # Online #
 $source = $dp->getPage ('forum/');
 preg_match ('/Geregistreerde\ gebruikers(.+)\<\/a\>/', $source, $match);
 $online = str_replace ('Geregistreerde gebruikers: ', '', strip_tags ($match[0]));
-file_put_contents ('stuff/online', serialize ($online));
+//file_put_contents ('stuff/online', serialize ($online));
 addToDB(serialize ($online), 'online');
 
 # IP #
 $ip = file_get_contents ('http://thisisd3.com/ip.php');
-file_put_contents ('stuff/ip', $ip);
+//file_put_contents ('stuff/ip', $ip);
 addToDB(serialize ($ip), 'ip');
 
 # last updated #
 $up =  date('l d F Y - H:i');
-file_put_contents ('stuff/update', serialize($up));
+//file_put_contents ('stuff/update', serialize($up));
 addToDB(serialize ($up), 'update');
 
 # Private functions #
