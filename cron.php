@@ -3,15 +3,15 @@
 include_once ('dp.class.php');
 include_once ('../config.php');
 
-$hostDB 	= $dbconfig['host'];
-$user 		= $dbconfig['user'];
-$password 	= $dbconfig['password'];
+$hostDB 	= $config['db']['host'];
+$user 		= $config['db']['user'];
+$password 	= $config['db']['password'];
 		
 $dbh = new PDO($hostDB, $user, $password);
 //$push = file_get_contents('http://thisisd3.com/push/push.php?title=DP+IRC+Bot&message=DP+irc+bot+started+updating');
 //echo $push;
 
-$dp = new DigitalPlace ($user, $pass);
+$dp = new DigitalPlace ($config['dp']['user'], $config['dp']['password']);
 
 # Forum #
 $forum = $dp->getForumItems (25);
@@ -104,13 +104,14 @@ function trimString ($string)
 
 function addToDB($content, $type){
 	global $dbh;
+	var_dump("Data -> $content en $type");
 	$stmt = $dbh->prepare("UPDATE `info` SET content='".$content."' WHERE naam = '".$type."'");
 	
 	if ($stmt->execute()) { 
 		echo "Stored $type in DB.".PHP_EOL;
 	} else {
 		var_dump($stmt->errorInfo());
-		echo 'PDO::errorInfo(): '.implode(",", $stmt->errorInfo());
+		die( 'PDO::errorInfo(): '.implode(",", $stmt->errorInfo()));
 	}
 }
 

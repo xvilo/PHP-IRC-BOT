@@ -1,4 +1,5 @@
 <?php
+	$_ = 'bot.php';
 /**
  * $Id$
  * $Revision$
@@ -52,12 +53,11 @@ class MyBot
             
             //auto functions
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '\+\+ .+$', $this, 'irc_karma'),
-            //$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '-reg .+$', $this, 'irc_reg'),
             $irc->registerActionHandler(SMARTIRC_TYPE_JOIN, '.*?', $this, 'irc_join'),
             
             //admin functions
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^-q', $this, 'quit'),
-            $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^-r', $this, 'reload'),
+            $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^-r', $this, 'restart'),
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^-uirl', $this, 'dp_update_irl'),
             $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '.*?', $this, 'channel_test'),
         );
@@ -111,6 +111,16 @@ class MyBot
 	public function quit($irc, $data){
 		if(($data->ident == "xvilo")&&($data->host == "internet.user")){
 			$irc->quit();
+			exit(1);
+		}else{
+			$irc->message(SMARTIRC_TYPE_QUERY, $data->nick, "Niet toegestaan! Dit is gelogd");
+		}
+	}
+	
+	public function restart($irc, $data){
+		if(($data->ident == "xvilo")&&($data->host == "internet.user")){
+			$irc->quit();
+			exit(2);
 		}else{
 			$irc->message(SMARTIRC_TYPE_QUERY, $data->nick, "Niet toegestaan! Dit is gelogd");
 		}
@@ -248,3 +258,5 @@ $irc->message(SMARTIRC_TYPE_QUERY, "NickServ", "identify {$ircconfig['nickserv']
 $irc->join($ircconfig['channels']);
 $irc->listen();
 $irc->disconnect();
+
+pcntl_exec($_);

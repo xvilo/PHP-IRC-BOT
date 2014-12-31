@@ -1,0 +1,24 @@
+#!/bin/bash
+
+LOOP=false
+
+
+while [ "$LOOP" != "false" ]
+echo "do"
+do
+	php bot.php
+	STATUS=$?
+
+	echo $STATUS
+
+	if [ "$STATUS" == "0" ]; then
+               echo "restarting bot"
+	elif [ "$STATUS" = "1" ]; then
+		echo "Quited, stopping..."
+		CORRECT=true
+	elif [ "$STATUS" = "2" ]; then
+		echo "RESTARTING BOT..."
+	else
+		echo "RESTARTING BOT... Something went wrong"
+	fi
+done
